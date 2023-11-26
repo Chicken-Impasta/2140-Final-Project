@@ -132,7 +132,43 @@ class Fridge():
 
 class Dish:
 
-    def __init__(self, ingredients, name, score):
+    def __init__(self, name=None, score=0,ingredients=[]):
         self.ingredients = ingredients
         self.name = name
         self.score = score
+
+    def select_ingredients(self,fridge):
+        print("Let's get cooking! First select the ingredients")
+        contents_dict = {i:0 for i in set(fridge.contents)}
+        key = 'y'
+        for i in contents_dict:
+            for j in fridge.contents:
+                if j == i:
+                    current_count = contents_dict.get(i)
+                    current_count += 1
+                    contents_dict.update({i:current_count})
+        while key!='n':
+            ingredient_number_pairs = []
+            shelf_number = 1
+            for i in contents_dict:
+                current_line = "{} | x{} {}"
+                current_line = current_line.format(shelf_number,str(contents_dict.get(i)),str(i))
+                ingredient_number_pairs.append((shelf_number,i))
+                shelf_number += 1                
+                print(current_line)
+            selection = input("\nType the number of the desired ingredient to include it in your dish\n")
+            for i in ingredient_number_pairs:
+                if int(selection) == i[0]:
+                    fridge.contents.remove(i[1])
+                    current_count = contents_dict.get(i[1])
+                    contents_dict.update({i[1]:(current_count-1)})
+                    self.ingredients.append(i[1])
+                    print("\nAdded " + str(i[1]) + "!")
+            if not fridge.contents:
+                print("Your fridge is now empty.\n")
+                key = 'n'
+            else:
+                key = input("\nContinue adding ingredients? (y/n): ")
+        return self.ingredients
+            
+        
