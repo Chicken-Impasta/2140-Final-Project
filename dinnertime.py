@@ -1,4 +1,5 @@
 import random
+import time
 random.seed()
 
 class Ingredient():
@@ -103,7 +104,7 @@ class Fridge():
         """
         Returns the contents of the fridge as a string in a user-readable format
         """
-        print("Inside the fridge you find...\n")
+        print("\nInside the fridge you find...\n")
         contents_dict = {i:0 for i in set(self.contents)}
         for i in contents_dict:
             for j in self.contents:
@@ -148,7 +149,7 @@ class Dish:
         until there are no more ingredients left in the fridge.
         """
 
-        print("Let's get cooking! First select the ingredients")
+        print("\nFirst select the ingredients")
         contents_dict = {i:0 for i in set(fridge.contents)}
         key = 'y'
         for i in contents_dict:
@@ -166,14 +167,14 @@ class Dish:
                 ingredient_number_pairs.append((shelf_number,i))
                 shelf_number += 1                
                 print(current_line)
-            selection = input("\nType the number of the desired ingredient to include it in your dish\n")
+            selection = input("\n\033[1mType the number of the desired ingredient to include it in your dish\033[0m ")
             for i in ingredient_number_pairs:
                 if int(selection) == i[0]:
                     fridge.contents.remove(i[1])
                     current_count = contents_dict.get(i[1])
                     contents_dict.update({i[1]:(current_count-1)})
                     self.ingredients.append(i[1])
-                    print("\nAdded " + str(i[1]) + "!")
+                    print("\n\033[1mAdded " + str(i[1]) + "!\033[0m")
             if not fridge.contents:
                 print("Your fridge is now empty.\n")
                 key = 'n'
@@ -189,13 +190,13 @@ class Dish:
         """
         cooking_methods = ["Boiled","Fried"]
         counter = 0
-        print("Let's get cooking! How are you going to prepare this dish?\n")
+        print("\nLet's get cooking! How are you going to prepare this dish?\n")
         for i in cooking_methods:
             cooking_methods_menu = "{} | {}"
             cooking_methods_menu = cooking_methods_menu.format(counter,i)
             print(cooking_methods_menu)
             counter += 1
-        method = input("\n")
+        method = input("\n\033[1mType the number of the desired cooking method\033[0m ")
         for i in cooking_methods:
             if method == str(cooking_methods.index(i)):
                 method = i
@@ -216,18 +217,18 @@ class Dish:
         Modifies the name of the dish based on its prewviously calculated score.
         """
         if self.score >= 10:
-            self.name = "Delicious " + self.name
+            self.name = "Delicious " + '"' + self.name
         elif self.score >= 5:
-            self.name = "Palatable " + self.name
+            self.name = "Palatable " + '"' + self.name
         elif self.score >= 0:
-            self.name = "Inedible " + self.name
+            self.name = "Inedible " + '"' + self.name
         else:
-            self.name = "Lethal " + self.name
+            self.name = 'Lethal ' + '"' + self.name
         ingredients_name = set(self.ingredients)
         for i in ingredients_name:
-            self.name = self.name + i.name
+            self.name = self.name + " " + i.name
         foods = ["Casserole", "Muffins", "Lasagna", "Stew", "Monstrousity"]
-        self.name = self.name + " " + foods[random.randrange(len(foods))]
+        self.name = self.name + '" ' + foods[random.randrange(len(foods))]
 
     def give_to_son(self):
         """
@@ -236,13 +237,13 @@ class Dish:
         to what he has just been given. 
         """
         game_over = "\n----GAME OVER----"
-        print("\nYou give the '" + self.name + "' to your hungry son!\n")
+        print("\n\n\nYou give the '" + self.name + "' to your hungry son!\n")
         if "Lethal" in self.name:
             print("Your son is now foaming at the mouth! Time to call poision control.")
             print(game_over)
         elif "Inedible" in self.name:
             print("Your son is thouroughly disgusted by what he has just eaten.")
-            print("\n'Food is either eaten for enjoyment or for fuel. This falls into the fuel category.' \nhe tells you before leaving the house to walk off what he has just ingested.")
+            print('\n"Food is either eaten for enjoyment or for fuel. This falls into the fuel category." \nhe tells you before leaving the house to walk off what he has just ingested.')
             print(game_over)
         elif "Palatable" in self.name:
             print("Your son asks you why you didn't just heat up instant noodles instead.")
@@ -251,6 +252,25 @@ class Dish:
             print("Your son loves it.")
             print("\n'I have a new favorite food, it's: '" + self.name + "'.' he says.")
             print(game_over)
+        
+    def eat_dish(self):
+        game_over = "\n----GAME OVER----"
+        print("\n\n\nYou decide to eat the '" + self.name + "' yourself.\n")
+        if "Lethal" in self.name:
+            print("You fall, convulsing, to the floor after one bite! Time to call poision control.")
+            print(game_over)
+        elif "Inedible" in self.name:
+            print("It's disgusting. Maybe cooking just isn't for you.")
+            print(game_over)
+        elif "Palatable" in self.name:
+            print("It's ok, but you think you are going to just make instant noodles next time")
+            print("\nYour son comes downstairs and asks where dinner is. Someone has some explaining to do.")
+            print(game_over)
+        else:
+            print("It's delicious!")
+            print("\nYour son comes downstairs and asks where dinner is. Someone has some explaining to do.")
+            print(game_over)
+
 
 class Game():
 
@@ -272,19 +292,38 @@ class Game():
             while line:
                 line = myFile.readline()
                 print(line)
-
-
-
-
-
-
-        
-        
     
-
-
-
-
-
-            
+    def play_game(self):
+        """
+        Returns nothing
+        controls the game state
+        """
+        key = 'x'
+        while key:
+            self.introduction()
+            key = input("\033[1mpress ENTER to continue\033[0m ")
+        key = 'x'
+        f = Fridge()
+        f.randomize_contents()
+        while key:
+            print(f)
+            key = input("\033[1mpress ENTER to continue\033[0m ")
+        key = 'x'
+        d = Dish()
+        d.select_ingredients(f)
+        d.make_dish()
+        d.is_edible()
+        print("\nYou sit and wait for your dish to cook...")
+        time.sleep(3)
+        print("\n...it's finished! You made: " + '\033[1m'+ d.name + '\033[0m')
+        key = input("\n\033[1mEat the " + d.name + " yourself? (y/n)\033[0m ")
+        if key == 'y':
+            d.eat_dish()
+        else:
+            d.give_to_son()
         
+
+
+
+g1 = Game()
+g1.play_game()
