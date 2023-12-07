@@ -392,7 +392,7 @@ class Hardmode(Game):
         key = 'x'
         while key:
             self.introduction()
-            print("\033[1myou have 15 seconds to make 5 dishes for you hungry son before he runs upstairs and restarts your computer,")
+            print("\033[1mYou have 15 seconds to make 5 dishes for your ravenous son before he runs upstairs and restarts your computer out of rage,")
             print("deleting all of your unsaved work and open tabs! What a pest!")
             
             key = input("\npress ENTER to continue\033[0m ")
