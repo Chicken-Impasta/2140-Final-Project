@@ -61,26 +61,26 @@ class TestDish(unittest.TestCase):
         Note that since this function uses user input to select ingredients,
         user input to manually empty the fridge is required.
         """
-        print("manually empty the fridge for unittest")
+        print("\nmanually empty the fridge for unittest")
         f1 = dinnertime.Fridge()
         f1.randomize_contents()
         d1 = dinnertime.Dish()
         self.assertEqual(len(d1.select_ingredients(f1)),5)
 
     def test_select_ingredients(self):
-        print("manually empty ingredients for unittest, again")
-        f1 = dinnertime.Fridge()
-        f1.randomize_contents()
-        d1 = dinnertime.Dish()
-        initial_fridge_contents = set(f1.contents)
-        self.assertEqual(set(d1.select_ingredients(f1)),initial_fridge_contents)
+        print("\nmanually empty ingredients for unittest, again")
+        f2 = dinnertime.Fridge()
+        f2.randomize_contents()
+        d2 = dinnertime.Dish()
+        initial_fridge_contents = set(f2.contents)
+        self.assertEquals(set(d2.select_ingredients(f2)),initial_fridge_contents)
 
     def test_make_dish_name(self):
         """
         Test to check that selecting cooking method changes the name. 
         """
         d1 = dinnertime.Dish()
-        print("Select 'Boiled' for unittest")
+        print("\nSelect 'Boiled' for unittest")
         d1.make_dish()
         self.assertEqual(d1.name,"Boiled")
     
@@ -93,7 +93,7 @@ class TestDish(unittest.TestCase):
         i1 = dinnertime.Ice()
         t1.freshness = -5
         d1.ingredients = [t1]
-        print("Select 'Boiled' for unittest")
+        print("\nSelect 'Boiled' for unittest")
         d1.make_dish()
         d1.is_edible()
         self.assertIn('Lethal "Boiled Twigs"', d1.name)

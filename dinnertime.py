@@ -1,7 +1,6 @@
 import random
 import time
 import subprocess
-import signal
 random.seed()
 
 class Ingredient():
@@ -157,6 +156,7 @@ class Dish:
         back to them "main ingredient menu"-- this is by design. 
         """
         print("\nFirst select the ingredients")
+        self.ingredients = []
         contents_names = [i.name for i in fridge.contents]
         contents_dict = {i:0 for i in set(contents_names)}
         key = 'y'
@@ -205,6 +205,7 @@ class Dish:
                                 contents_dict.update({v[1].name:(current_count-1)})
                                 self.ingredients.append(v[1])
                                 print("\n\033[1mAdded " + str(v[1]) + "!\033[0m")
+                                print(self.ingredients)
                 else:
                     if len(specific_ingredients_list) > 1:
                         selection = random.randrange(1,len(specific_ingredients_list))
@@ -217,6 +218,7 @@ class Dish:
                             contents_dict.update({g[1].name:(current_count-1)})
                             self.ingredients.append(g[1])
                             print("\n\033[1mAdded " + str(g[1]) + "!\033[0m")
+                            print(self.ingredients)
                             inspect_key = 'y'  
             if not fridge.contents:
                 print("\nYour fridge is now empty.")
@@ -422,9 +424,6 @@ class Hardmode(Game):
             print("\n(you made " + str(self.score) +" dishes)")
             time.sleep(10)
             subprocess.call(["shutdown", "-r", "-t", "0"])
-
-
-    
 
 if __name__ == '__main__':
     mode_selection = input("\033[1mType gamemode selection (Normal/Hard)\033[0m ")
