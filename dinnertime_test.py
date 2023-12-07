@@ -1,7 +1,7 @@
 import dinnertime
 import unittest
 
-class FactTest(unittest.TestCase):
+class TestIngredient(unittest.TestCase):
 
     #INGREDIENT FUNCTION TESTS
 
@@ -12,6 +12,11 @@ class FactTest(unittest.TestCase):
         from dinnertime import Meatballs
         m = Meatballs()
         self.assertEqual(str(m),"Meatballs")
+
+    #no tests for inspect_ingredient(): only prints things; returns nothing
+
+
+class TestFridge(unittest.TestCase):
 
     #FRIDGE FUNCTION TESTS
     
@@ -33,10 +38,12 @@ class FactTest(unittest.TestCase):
         f1.randomize_contents()
         for i in f1.contents:
             self.assertIsInstance(i,dinnertime.Ingredient)
+
+class TestDish(unittest.TestCase):
     
     #DISH FUNCTION TESTS
 
-    def dish_has_ingredients(self):
+    def test_dish_has_ingredients(self):
         """
         Test to check that a dish's ingredients selected by the user are
         indeed ingredients.
@@ -54,12 +61,49 @@ class FactTest(unittest.TestCase):
         Note that since this function uses user input to select ingredients,
         user input to manually empty the fridge is required.
         """
+        print("manually empty the fridge for unittest")
         f1 = dinnertime.Fridge()
         f1.randomize_contents()
         d1 = dinnertime.Dish()
-        self.assertEquals(len(d1.select_ingredients(f1)),5)
+        self.assertEqual(len(d1.select_ingredients(f1)),5)
+
+    def test_select_ingredients(self):
+        print("manually empty ingredients for unittest, again")
+        f1 = dinnertime.Fridge()
+        f1.randomize_contents()
+        d1 = dinnertime.Dish()
+        initial_fridge_contents = set(f1.contents)
+        self.assertEqual(set(d1.select_ingredients(f1)),initial_fridge_contents)
+
+    def test_make_dish_name(self):
+        """
+        Test to check that selecting cooking method changes the name. 
+        """
+        d1 = dinnertime.Dish()
+        print("Select 'Boiled' for unittest")
+        d1.make_dish()
+        self.assertEqual(d1.name,"Boiled")
+    
+    def test_is_edible(self):
+        """
+        Test to check final name generation
+        """
+        d1 = dinnertime.Dish()
+        t1 = dinnertime.Twigs()
+        i1 = dinnertime.Ice()
+        t1.freshness = -5
+        d1.ingredients = [t1]
+        print("Select 'Boiled' for unittest")
+        d1.make_dish()
+        d1.is_edible()
+        self.assertIn('Lethal "Boiled Twigs"', d1.name)
+
+    #no test for give_to_son() since nothing is returned and nothing is modified
+    #no test for eat_dish() for the aforementioned reasons
+
+#no tests for game class since besides introduction(), which modifies and returns nothing, the other
+#function play_game() is simply the combination of all previously tested class methods. 
     
         
-
 if __name__ == '__main__':
     unittest.main()

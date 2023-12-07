@@ -148,9 +148,12 @@ class Dish:
         """
         Returns a list of Ingredients
         Lets the user select ingredients to be used in a dish, as many as they desire,
-        until there are no more ingredients left in the fridge.
+        until there are no more ingredients left in the fridge. After selecting a 
+        particular ingredient type, the user may either choose to inspect the 
+        individual ingredients, or just skip and have a random one chose for them. 
+        Note that once the user selects a particular ingredient type they cannot go 
+        back to them "main ingredient menu"-- this is by design. 
         """
-
         print("\nFirst select the ingredients")
         contents_names = [i.name for i in fridge.contents]
         contents_dict = {i:0 for i in set(contents_names)}
@@ -171,15 +174,12 @@ class Dish:
                 shelf_number += 1                
                 print(current_line)
             selection = input("\n\033[1mType the number of the desired ingredient to include it in your dish\033[0m ")
-            
-            
             specific_ingredients_list = []
             for i in ingredient_number_pairs:
                 if int(selection) == i[0]:
                     for j in fridge.contents:
                         if j.name == i[1]:
                             specific_ingredients_list.append(j)
-            
             inspect_key = 'n'
             while inspect_key != 'y':
                 shelf_number = 1
@@ -191,7 +191,6 @@ class Dish:
                     ingredient_number_pairs.append((shelf_number,z))
                     shelf_number += 1
                     print(current_line)
-
                 selection = input("\n\033[1mtype number of ingredient to inspect, or ENTER for random selection\033[0m ")
                 if selection != '':
                     for v in ingredient_number_pairs:
@@ -200,12 +199,10 @@ class Dish:
                             inspect_key = input("Add ingredient? (y/n) ")
                             if inspect_key == 'y':
                                 fridge.contents.remove(v[1])
-                    current_count = contents_dict.get(v[1].name)
-                    print(current_count)
-                    contents_dict.update({v[1].name:(current_count-1)})
-                    self.ingredients.append(v[1])
-                    print("\n\033[1mAdded " + str(v[1]) + "!\033[0m")
-
+                                current_count = contents_dict.get(v[1].name)
+                                contents_dict.update({v[1].name:(current_count-1)})
+                                self.ingredients.append(v[1])
+                                print("\n\033[1mAdded " + str(v[1]) + "!\033[0m")
                 else:
                     if len(specific_ingredients_list) > 1:
                         selection = random.randrange(1,len(specific_ingredients_list))
@@ -214,12 +211,11 @@ class Dish:
                     for g in ingredient_number_pairs:
                         if int(selection) == g[0]:
                             fridge.contents.remove(g[1])                       
-                    current_count = contents_dict.get(g[1].name)
-                    contents_dict.update({g[1].name:(current_count-1)})
-                    self.ingredients.append(g[1])
-                    print("\n\033[1mAdded " + str(g[1]) + "!\033[0m")
-                    inspect_key = 'y'
-                    
+                            current_count = contents_dict.get(g[1].name)
+                            contents_dict.update({g[1].name:(current_count-1)})
+                            self.ingredients.append(g[1])
+                            print("\n\033[1mAdded " + str(g[1]) + "!\033[0m")
+                            inspect_key = 'y'  
             if not fridge.contents:
                 print("\nYour fridge is now empty.")
                 key = 'n'
@@ -259,7 +255,7 @@ class Dish:
     def is_edible(self):
         """
         Returns nothing
-        Modifies the name of the dish based on its prewviously calculated score.
+        Modifies the name of the dish based on its previously calculated score.
         """
         if self.score >= 10:
             self.name = "Delicious " + '"' + self.name
@@ -299,6 +295,11 @@ class Dish:
             print(game_over)
         
     def eat_dish(self):
+        """
+        Returns nothing
+        Controls the outcome of the user eating the dish themselves
+        based on the score of the dish
+        """
         game_over = "\n----GAME OVER----"
         print("\n\n\nYou decide to eat the '" + self.name + "' yourself.\n")
         if "Lethal" in self.name:
@@ -369,13 +370,7 @@ class Game():
         
 
 
-
-g1 = Game()
-g1.play_game()
-
-# f1 = Fridge()
-# f1.randomize_contents()
-# print(f1)
-# d1 = Dish()
-# d1.select_ingredients(f1)
+if __name__ == '__main__':
+    g1 = Game()
+    g1.play_game()
 
