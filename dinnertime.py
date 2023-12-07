@@ -205,7 +205,6 @@ class Dish:
                                 contents_dict.update({v[1].name:(current_count-1)})
                                 self.ingredients.append(v[1])
                                 print("\n\033[1mAdded " + str(v[1]) + "!\033[0m")
-                                print(self.ingredients)
                 else:
                     if len(specific_ingredients_list) > 1:
                         selection = random.randrange(1,len(specific_ingredients_list))
@@ -218,7 +217,6 @@ class Dish:
                             contents_dict.update({g[1].name:(current_count-1)})
                             self.ingredients.append(g[1])
                             print("\n\033[1mAdded " + str(g[1]) + "!\033[0m")
-                            print(self.ingredients)
                             inspect_key = 'y'  
             if not fridge.contents:
                 print("\nYour fridge is now empty.")
