@@ -1,5 +1,7 @@
 import random
 import time
+import subprocess
+import signal
 random.seed()
 
 class Ingredient():
@@ -326,7 +328,6 @@ class Game():
         Initializes a Game object
         """
         self.mode = None
-        self.playthroughs = 0
     
     def introduction(self):
         """
@@ -368,9 +369,61 @@ class Game():
         else:
             d.give_to_son()
         
+class Hardmode(Game):
 
+    def __init__(self):
+        super().__init__()
+
+    def timer(self):
+        """
+        Returns nothing
+        Function to restart the player's computer after 15 seconds
+        """
+        subprocess.call(["shutdown", "-r", "-t", "15"])
+
+    def play_game(self):
+        """
+        Returns nothing
+        controls the game state
+        """
+        start = time.time()
+        while time.time() - start > 15:
+            
+            key = 'x'
+            while key:
+                self.introduction()
+                print("\n\033[1myou have 15 seconds to make dinner before you hungry son restarts your computer, starting NOW!")
+                
+                key = input("press ENTER to continue\033[0m ")
+            key = 'x'
+            f = Fridge()
+            f.randomize_contents()
+            while key:
+                print(f)
+                key = input("\033[1mpress ENTER to continue\033[0m ")
+            key = 'x'
+            d = Dish()
+            d.select_ingredients(f)
+            d.make_dish()
+            d.is_edible()
+            print("\nYou sit and wait for your dish to cook...")
+            time.sleep(3)
+            print("\n...it's finished! You made: " + '\033[1m'+ d.name + '\033[0m')
+            key = input("\n\033[1mEat the " + d.name + " yourself? (y/n)\033[0m ")
+            if key == 'y':
+                d.eat_dish()
+            else:
+                d.give_to_son()
+        self.timer()
+
+    
 
 if __name__ == '__main__':
-    g1 = Game()
-    g1.play_game()
+    mode_selection = input("\033[1mType gamemode selection (Normal/Hard)\033[0m ")
+    if mode_selection == "Normal":
+        g1 = Game()
+        g1.play_game()
+    else:
+        g1 = Hardmode()
+        g1.play_game()
 
