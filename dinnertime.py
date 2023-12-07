@@ -169,6 +169,7 @@ class Dish:
         while key!='n':
             ingredient_number_pairs = []
             shelf_number = 1
+            print("")
             for i in contents_dict:
                 current_line = "{} | x{} {}"
                 current_line = current_line.format(shelf_number,str(contents_dict.get(i)),str(i))
