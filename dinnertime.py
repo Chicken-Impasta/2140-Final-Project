@@ -372,29 +372,31 @@ class Game():
 class Hardmode(Game):
 
     def __init__(self):
-        super().__init__()
-
-    def timer(self):
         """
         Returns nothing
-        Function to restart the player's computer after 15 seconds
+        initializes hardmode object
         """
-        subprocess.call(["shutdown", "-r", "-t", "15"])
+        super().__init__()
+        self.score = 0
 
     def play_game(self):
         """
         Returns nothing
-        controls the game state
+        controls the game state, for hardmode the rules are displayed along with the
+        normal introduction. If the dish requirement is not met, the player's
+        computer will be force restarted. If the timer runs out while the player
+        is in the process of creating a dish, they will still get to finish 
+        their current dish before they have to face the consequences. 
         """
-        start = time.time()
-        while time.time() - start > 15:
+        key = 'x'
+        while key:
+            self.introduction()
+            print("\033[1myou have 15 seconds to make 5 dishes for you hungry son before he runs upstairs and restarts your computer,")
+            print("deleting all of your unsaved work and open tabs! What a pest!")
             
-            key = 'x'
-            while key:
-                self.introduction()
-                print("\n\033[1myou have 15 seconds to make dinner before you hungry son restarts your computer, starting NOW!")
-                
-                key = input("press ENTER to continue\033[0m ")
+            key = input("\npress ENTER to continue\033[0m ")
+        start = time.time()
+        while time.time() - start < 15:
             key = 'x'
             f = Fridge()
             f.randomize_contents()
@@ -409,18 +411,24 @@ class Hardmode(Game):
             print("\nYou sit and wait for your dish to cook...")
             time.sleep(3)
             print("\n...it's finished! You made: " + '\033[1m'+ d.name + '\033[0m')
-            key = input("\n\033[1mEat the " + d.name + " yourself? (y/n)\033[0m ")
-            if key == 'y':
-                d.eat_dish()
-            else:
-                d.give_to_son()
-        self.timer()
+            self.score += 1
+        if self.score >= 5:
+            print("WOW! You cook fast!")
+        else:
+            print("\n\n\033[1mTIME IS UP. You rush upstairs to find your hungry son restarting your computer\033[0m")
+            print("\nAs he restarts your computer, your son locks eyes with you as he says:")
+            print('\n"The greatest glory in living lies not in never falling,')
+            print('but in rising every time we fall."')
+            print("\n(you made " + str(self.score) +" dishes)")
+            time.sleep(10)
+            subprocess.call(["shutdown", "-r", "-t", "0"])
+
 
     
 
 if __name__ == '__main__':
     mode_selection = input("\033[1mType gamemode selection (Normal/Hard)\033[0m ")
-    if mode_selection == "Normal":
+    if mode_selection == "Normal" or mode_selection == "normal":
         g1 = Game()
         g1.play_game()
     else:
