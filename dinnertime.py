@@ -19,7 +19,7 @@ class Ingredient():
         """
         return str(self.name)
     
-    def inpsect_ingredient(self):
+    def inspect_ingredient(self):
         """
         Returns nothing.
         Shows the user information regarding the nutritional value
@@ -105,10 +105,11 @@ class Fridge():
         Returns the contents of the fridge as a string in a user-readable format
         """
         print("\nInside the fridge you find...\n")
-        contents_dict = {i:0 for i in set(self.contents)}
+        contents_names = [i.name for i in self.contents]
+        contents_dict = {i:0 for i in set(contents_names)}
         for i in contents_dict:
             for j in self.contents:
-                if j == i:
+                if j.name == i:
                     current_count = contents_dict.get(i)
                     current_count += 1
                     contents_dict.update({i:current_count})
@@ -130,6 +131,7 @@ class Fridge():
         for i in range(5):
             ingredient_picker = ingredients_list[random.randrange(0,len(ingredients_list))]
             self.contents.append(ingredient_picker)
+            ingredients_list = [Meatballs(), Twigs(),Cheese(),Pasta(),Ice()]
 
 class Dish:
 
@@ -150,11 +152,12 @@ class Dish:
         """
 
         print("\nFirst select the ingredients")
-        contents_dict = {i:0 for i in set(fridge.contents)}
+        contents_names = [i.name for i in fridge.contents]
+        contents_dict = {i:0 for i in set(contents_names)}
         key = 'y'
         for i in contents_dict:
             for j in fridge.contents:
-                if j == i:
+                if j.name == i:
                     current_count = contents_dict.get(i)
                     current_count += 1
                     contents_dict.update({i:current_count})
@@ -168,15 +171,57 @@ class Dish:
                 shelf_number += 1                
                 print(current_line)
             selection = input("\n\033[1mType the number of the desired ingredient to include it in your dish\033[0m ")
+            
+            
+            specific_ingredients_list = []
             for i in ingredient_number_pairs:
                 if int(selection) == i[0]:
-                    fridge.contents.remove(i[1])
-                    current_count = contents_dict.get(i[1])
-                    contents_dict.update({i[1]:(current_count-1)})
-                    self.ingredients.append(i[1])
-                    print("\n\033[1mAdded " + str(i[1]) + "!\033[0m")
+                    for j in fridge.contents:
+                        if j.name == i[1]:
+                            specific_ingredients_list.append(j)
+            
+            inspect_key = 'n'
+            while inspect_key != 'y':
+                shelf_number = 1
+                ingredient_number_pairs = []
+                print("")
+                for z in specific_ingredients_list:
+                    current_line = "{}| {}"
+                    current_line = current_line.format(shelf_number, str(z))
+                    ingredient_number_pairs.append((shelf_number,z))
+                    shelf_number += 1
+                    print(current_line)
+
+                selection = input("\n\033[1mtype number of ingredient to inspect, or ENTER for random selection\033[0m ")
+                if selection != '':
+                    for v in ingredient_number_pairs:
+                        if int(selection) == v[0]:
+                            v[1].inspect_ingredient()
+                            inspect_key = input("Add ingredient? (y/n) ")
+                            if inspect_key == 'y':
+                                fridge.contents.remove(v[1])
+                    current_count = contents_dict.get(v[1].name)
+                    print(current_count)
+                    contents_dict.update({v[1].name:(current_count-1)})
+                    self.ingredients.append(v[1])
+                    print("\n\033[1mAdded " + str(v[1]) + "!\033[0m")
+
+                else:
+                    if len(specific_ingredients_list) > 1:
+                        selection = random.randrange(1,len(specific_ingredients_list))
+                    else:
+                        selection = 1
+                    for g in ingredient_number_pairs:
+                        if int(selection) == g[0]:
+                            fridge.contents.remove(g[1])                       
+                    current_count = contents_dict.get(g[1].name)
+                    contents_dict.update({g[1].name:(current_count-1)})
+                    self.ingredients.append(g[1])
+                    print("\n\033[1mAdded " + str(g[1]) + "!\033[0m")
+                    inspect_key = 'y'
+                    
             if not fridge.contents:
-                print("Your fridge is now empty.\n")
+                print("\nYour fridge is now empty.")
                 key = 'n'
             else:
                 key = input("\nContinue adding ingredients? (y/n): ")
@@ -239,7 +284,7 @@ class Dish:
         game_over = "\n----GAME OVER----"
         print("\n\n\nYou give the '" + self.name + "' to your hungry son!\n")
         if "Lethal" in self.name:
-            print("Your son is now foaming at the mouth! Time to call poision control.")
+            print("Your son is now foaming at the mouth! Time to call poison control.")
             print(game_over)
         elif "Inedible" in self.name:
             print("Your son is thouroughly disgusted by what he has just eaten.")
@@ -327,3 +372,10 @@ class Game():
 
 g1 = Game()
 g1.play_game()
+
+# f1 = Fridge()
+# f1.randomize_contents()
+# print(f1)
+# d1 = Dish()
+# d1.select_ingredients(f1)
+
